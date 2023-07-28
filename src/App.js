@@ -15,15 +15,21 @@ function App() {
         setErrorMessage("");
       })
       .catch((error) => {
+        console.log(error);
         setWeatherData(null);
-        setErrorMessage("Error fetching weather data. Please try again.");
+        setErrorMessage(error.response.data.message);
       });
+  };
+  const clearData = () => {
+    setWeatherData(null);
+    setErrorMessage("");
+    setCity("");
   };
 
   return (
     <div>
       <h1>Weather Prediction</h1>
-      <div>
+      <div className="weather">
         <label htmlFor="city">City: </label>
         <input
           type="text"
@@ -32,22 +38,23 @@ function App() {
           onChange={(e) => setCity(e.target.value)}
         />
         <button onClick={fetchWeatherData}>Get Weather</button>
+        <button onClick={clearData}>Clear</button>
       </div>
-      {errorMessage && <p>{errorMessage}</p>}
+      {errorMessage && <b>{errorMessage}</b>}
       {weatherData && (
         <div>
           <h2>Weather for {weatherData.city}</h2>
-          <ul>
-            {weatherData.weatherForecastList.map((day) => (
-              <>
-                <table>
-                  <tr>
-                    <th>Date and Time</th>
-                    <th>Temperature</th>
-                    <th>High Temperature</th>
-                    <th>Low Temperature</th>
-                    <th>Weather Predicted</th>
-                  </tr>
+          <ol>
+            <table>
+              <tr>
+                <th>Date and Time</th>
+                <th>Temperature</th>
+                <th>High Temperature</th>
+                <th>Low Temperature</th>
+                <th>Weather Predicted</th>
+              </tr>
+              {weatherData.weatherForecastList.map((day) => (
+                <>
                   <tr>
                     <td>{day.date}</td>
                     <td>{day.temp} °f</td>
@@ -55,10 +62,10 @@ function App() {
                     <td>{day.lowTemp} °f</td>
                     <td>{day.prediction}</td>
                   </tr>
-                </table>
-              </>
-            ))}
-          </ul>
+                </>
+              ))}
+            </table>
+          </ol>
         </div>
       )}
     </div>
